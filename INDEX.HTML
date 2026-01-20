@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Python Quest – Tin học 10 (KNTT)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:linear-gradient(135deg,#43cea2,#185a9d);}
+    header{background:#0d47a1;color:#fff;padding:16px;text-align:center}
+    .container{max-width:900px;margin:16px auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
+    h2{color:#0d47a1}
+    input,select{width:100%;padding:10px;margin:6px 0 14px;border-radius:8px;border:1px solid #ccc}
+    .btn{background:#ff9800;color:#fff;border:none;border-radius:12px;padding:12px 18px;font-size:16px;cursor:pointer}
+    .btn:hover{background:#fb8c00}
+    .hidden{display:none}
+    .progress{height:18px;background:#eee;border-radius:10px;overflow:hidden;margin:10px 0}
+    .progress-bar{height:100%;width:0;background:#4caf50;transition:.3s}
+    .answer{background:#f3f3f3;padding:8px;border-radius:8px;margin:6px 0}
+    footer{text-align:center;color:#fff;padding:10px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>🐍 Python Quest</h1>
+  <p>Ứng dụng kiểm tra – ôn tập Python | Tin học 10 (KNTT)</p>
+</header>
+
+<div class="container" id="screen-login">
+  <h2>👤 Thông tin học sinh</h2>
+  <input id="hs_name" placeholder="Họ và tên" />
+  <input id="hs_class" placeholder="Lớp" />
+  <button class="btn" onclick="goLesson()">Bắt đầu</button>
+</div>
+
+<div class="container hidden" id="screen-lesson">
+  <h2>📚 Chọn bài học</h2>
+  <select id="lesson">
+    <option value="B17">Bài 17 – Biến và lệnh gán</option>
+    <option value="B18">Bài 18 – Lệnh vào ra</option>
+    <option value="B19">Bài 19 – Câu lệnh if</option>
+    <option value="B20">Bài 20 – Lặp for</option>
+    <option value="B21">Bài 21 – Lặp while</option>
+  </select>
+  <select id="level">
+    <option value="biet">Mức BIẾT</option>
+    <option value="hieu">Mức HIỂU</option>
+    <option value="vandung">Mức VẬN DỤNG</option>
+  </select>
+  <button class="btn" onclick="startQuiz()">Vào làm bài</button>
+</div>
+
+<div class="container hidden" id="screen-quiz">
+  <h2 id="title"></h2>
+  <div class="progress"><div class="progress-bar" id="bar"></div></div>
+  <div id="question"></div>
+  <div id="answers"></div>
+  <button class="btn" onclick="nextQ()">Câu tiếp</button>
+</div>
+
+<div class="container hidden" id="screen-result">
+  <h2>🎉 Kết quả</h2>
+  <p id="score"></p>
+  <p><em>Giáo viên sẽ nhận được kết quả của em.</em></p>
+  <button class="btn" onclick="location.reload()">Làm bài khác</button>
+</div>
+
+<footer>© 2026 – Ứng dụng phục vụ SKKN nâng cao năng lực số HS lớp 10</footer>
+
+<script>
+// CÂU HỎI MẪU (Bài 17)
+const DATA={
+  biet:[
+    {q:"Biến dùng để làm gì?",a:["Lưu dữ liệu","In dữ liệu","So sánh","Lặp"],c:0},
+    {q:"Cú pháp gán đúng?",a:["x==5","x:=5","x=5","x->5"],c:2}
+  ],
+  hieu:[
+    {q:"x=5; y=x+2. Giá trị y?",a:["5","7","2","Lỗi"],c:1}
+  ],
+  vandung:[
+    {q:"Để nhập số n từ bàn phím dùng lệnh nào?",a:["print()","input()","int()","range()"],c:1}
+  ]
+};
+let qs=[],i=0,score=0;
+
+function goLesson(){document.getElementById('screen-login').classList.add('hidden');document.getElementById('screen-lesson').classList.remove('hidden');}
+function startQuiz(){
+  const lv=document.getElementById('level').value;
+  qs=DATA[lv];i=0;score=0;
+  document.getElementById('screen-lesson').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  document.getElementById('title').innerText=`${document.getElementById('lesson').value} – ${lv.toUpperCase()}`;
+  loadQ();
+}
+function loadQ(){
+  const q=qs[i];
+  document.getElementById('question').innerHTML=`<b>Câu ${i+1}:</b> ${q.q}`;
+  document.getElementById('answers').innerHTML=q.a.map((x,j)=>`<div class='answer'><input type='radio' name='ans' value='${j}'> ${x}</div>`).join('');
+  document.getElementById('bar').style.width=((i+1)/qs.length*100)+'%';
+}
+function nextQ(){
+  const ch=document.querySelector('input[name=ans]:checked');
+  if(!ch){alert('Chọn đáp án');return}
+  if(+ch.value===qs[i].c)score++;
+  i++;
+  if(i<qs.length)loadQ(); else showResult();
+}
+function showResult(){
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-result').classList.remove('hidden');
+  document.getElementById('score').innerText=`Điểm: ${score}/${qs.length}`;
+  // Có thể gửi kết quả về Google Sheet tại đây
+}
+</script>
+</body>
+</html>
