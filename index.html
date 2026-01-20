@@ -67,18 +67,90 @@
 <footer>© 2026 – Ứng dụng phục vụ SKKN nâng cao năng lực số HS lớp 10</footer>
 
 <script>
-// CÂU HỎI MẪU (Bài 17)
-const DATA={
-  biet:[
-    {q:"Biến dùng để làm gì?",a:["Lưu dữ liệu","In dữ liệu","So sánh","Lặp"],c:0},
-    {q:"Cú pháp gán đúng?",a:["x==5","x:=5","x=5","x->5"],c:2}
-  ],
-  hieu:[
-    {q:"x=5; y=x+2. Giá trị y?",a:["5","7","2","Lỗi"],c:1}
-  ],
-  vandung:[
-    {q:"Để nhập số n từ bàn phím dùng lệnh nào?",a:["print()","input()","int()","range()"],c:1}
-  ]
+const DATA = {
+  /* =======================
+     BÀI 17 – BIẾN VÀ LỆNH GÁN
+  ======================== */
+  B17: {
+    biet: [
+      {q:"Biến trong Python dùng để làm gì?",a:["Lưu trữ dữ liệu","So sánh dữ liệu","In dữ liệu","Lặp chương trình"],c:0},
+      {q:"Kí hiệu gán trong Python là?",a:["==","=",":=","->"],c:1},
+      {q:"Tên biến hợp lệ là?",a:["2x","x_1","x-1","@x"],c:1},
+      {q:"Python có phân biệt chữ hoa – chữ thường không?",a:["Không","Có","Tùy hệ điều hành","Tùy chương trình"],c:1},
+      {q:"Giá trị của x sau lệnh x=5 là?",a:["5","x","0","Không xác định"],c:0},
+      {q:"Kiểu dữ liệu của 3.14 là?",a:["int","float","str","bool"],c:1},
+      {q:"Lệnh gán dùng để?",a:["So sánh","Gán giá trị","Nhập dữ liệu","Xuất dữ liệu"],c:1},
+      {q:"Biến trong Python không được bắt đầu bằng?",a:["Chữ cái","Dấu gạch dưới","Chữ số","Chữ thường"],c:2},
+      {q:"x=10 là ví dụ của?",a:["Biểu thức","Câu lệnh gán","Hàm","Vòng lặp"],c:1},
+      {q:"Giá trị True thuộc kiểu nào?",a:["int","str","bool","float"],c:2}
+    ],
+    hieu: [
+      {q:"x=5; y=x+3. Giá trị y là?",a:["5","3","8","Lỗi"],c:2},
+      {q:"x=10; x=x+1. Giá trị x là?",a:["10","11","9","Lỗi"],c:1},
+      {q:"Tên biến nào sau đây sai?",a:["soLuong","_tong","Tong-1","tong1"],c:2},
+      {q:"x='5'. Kiểu dữ liệu của x là?",a:["int","float","str","bool"],c:2},
+      {q:"Lệnh gán được thực hiện theo thứ tự?",a:["Trái sang phải","Phải sang trái","Ngẫu nhiên","Đồng thời"],c:1},
+      {q:"x=y=5 có nghĩa là?",a:["x=5","y=5","x và y cùng bằng 5","Lỗi"],c:2},
+      {q:"Python cho phép đổi kiểu dữ liệu bằng?",a:["input()","print()","int(), float()","range()"],c:2},
+      {q:"x=3; y=x. Khi x=5 thì y bằng?",a:["5","3","0","Lỗi"],c:1},
+      {q:"Biến giúp chương trình trở nên?",a:["Cứng nhắc","Linh hoạt","Khó hiểu","Dài hơn"],c:1},
+      {q:"Câu lệnh gán có thể dùng trong?",a:["Điều kiện","Vòng lặp","Mọi chương trình","Chỉ nhập"],c:2}
+    ],
+    vandung: [
+      {q:"Để lưu tuổi học sinh là số nguyên, biến phù hợp?",a:["tuoi='15'","tuoi=15","tuoi=15.0","tuoi=True"],c:1},
+      {q:"x=2; y=3; z=x*y. Giá trị z?",a:["5","6","23","Lỗi"],c:1},
+      {q:"Lệnh nào gán đúng chuỗi?",a:["x=10","x='Hello'","x=True","x=3.5"],c:1},
+      {q:"Muốn tăng x lên 2 đơn vị, dùng?",a:["x+2","x=x+2","2+x","x==2"],c:1},
+      {q:"Để gán giá trị nhập từ bàn phím cho n?",a:["n=input()","input(n)","print(n)","n==input()"],c:0},
+      {q:"x=5; y=2*x+1. y bằng?",a:["10","11","12","9"],c:1},
+      {q:"Biến dùng để tính tổng 2 số nhập vào?",a:["print","input","biến trung gian","range"],c:2},
+      {q:"Lệnh nào sai?",a:["a=1","b=2","1c=3","_d=4"],c:2},
+      {q:"Đổi chuỗi '10' thành số dùng?",a:["int('10')","str(10)","float()","input()"],c:0},
+      {q:"Ứng dụng của biến là?",a:["Lưu kết quả","Xử lý dữ liệu","Tái sử dụng giá trị","Tất cả"],c:3}
+    ]
+  },
+
+  /* =======================
+     BÀI 18 – LỆNH VÀO RA
+  ======================== */
+  B18: {
+    biet: [
+      {q:"Lệnh nhập dữ liệu trong Python là?",a:["print()","input()","int()","range()"],c:1},
+      {q:"Lệnh xuất dữ liệu là?",a:["input()","print()","type()","len()"],c:1},
+      {q:"input() trả về kiểu dữ liệu?",a:["int","float","str","bool"],c:2},
+      {q:"print() dùng để?",a:["Nhập","Xuất","Gán","So sánh"],c:1},
+      {q:"Muốn nhập số nguyên cần dùng?",a:["input()","int(input())","float()","str()"],c:1},
+      {q:"print('Hello') sẽ?",a:["Nhập Hello","In Hello","Lỗi","Không làm gì"],c:1},
+      {q:"Dữ liệu nhập từ bàn phím là?",a:["Số","Chuỗi","Logic","Ngẫu nhiên"],c:1},
+      {q:"print(5+3) cho kết quả?",a:["53","8","5+3","Lỗi"],c:1},
+      {q:"Hàm input có cần tham số không?",a:["Có","Không","Tùy","Không biết"],c:1},
+      {q:"print có thể in nhiều giá trị?",a:["Không","Có","Tùy","Sai"],c:1}
+    ],
+    hieu: [
+      {q:"x=int(input()). Nếu nhập 5 thì x bằng?",a:["'5'","5","5.0","Lỗi"],c:1},
+      {q:"print('A','B') in ra?",a:["AB","A B","A,B","Lỗi"],c:1},
+      {q:"input('Nhập số:') dùng để?",a:["Xuất","Nhập có thông báo","Gán","So sánh"],c:1},
+      {q:"print(x) khác print('x') ở điểm?",a:["Giá trị","Kiểu","Biến","Không khác"],c:0},
+      {q:"Nếu nhập 3 và 4, x=input(), y=input(), x+y là?",a:["7","34","Lỗi","0"],c:1},
+      {q:"Muốn tính tổng 2 số nhập cần?",a:["int()","float()","Chuyển kiểu","Không cần"],c:2},
+      {q:"print(x+y) cần điều kiện?",a:["x,y là số","x,y là chuỗi","x,y là bool","Không cần"],c:0},
+      {q:"input luôn trả về?",a:["Số","Chuỗi","Logic","Danh sách"],c:1},
+      {q:"print giúp kiểm tra?",a:["Giá trị","Lỗi","Chương trình","Tất cả"],c:0},
+      {q:"Kết hợp input và print để?",a:["Nhập – xuất","Lặp","Rẽ nhánh","Gán"],c:0}
+    ],
+    vandung: [
+      {q:"Viết lệnh nhập tuổi và in ra?",a:["print(input())","x=input(); print(x)","input(print())","Sai"],c:1},
+      {q:"Nhập 2 số và in tổng cần bao nhiêu biến?",a:["1","2","3","0"],c:2},
+      {q:"Muốn in: Tổng = 10 dùng?",a:["print('Tổng=',10)","print('Tổng=10')","print(Tổng,10)","Lỗi"],c:0},
+      {q:"Nhập chiều dài và rộng để tính S?",a:["1 input","2 input","3 input","Không cần"],c:1},
+      {q:"Lỗi thường gặp khi nhập số?",a:["Sai kiểu","Quên int()","Quên biến","Tất cả"],c:3},
+      {q:"print(x+y) sai khi?",a:["x,y là chuỗi","x,y là số","x,y tồn tại","x,y nhập"],c:0},
+      {q:"input phù hợp với bài toán?",a:["Tĩnh","Có dữ liệu thay đổi","Không nhập","Chỉ in"],c:1},
+      {q:"Muốn nhập điểm HS nên dùng?",a:["int","float","str","bool"],c:1},
+      {q:"print giúp HS làm gì?",a:["Xem kết quả","Kiểm tra","Hiểu chương trình","Tất cả"],c:3},
+      {q:"Ứng dụng lệnh vào ra là?",a:["Giao tiếp người dùng","Xử lý dữ liệu","Điều khiển","Tất cả"],c:3}
+    ]
+  }
 };
 let qs=[],i=0,score=0;
 
@@ -113,3 +185,4 @@ function showResult(){
 </script>
 </body>
 </html>
+
