@@ -1,259 +1,45 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Python Quest – Tin học 10 (KNTT)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:linear-gradient(135deg,#43cea2,#185a9d);}
-    header{background:#0d47a1;color:#fff;padding:16px;text-align:center}
-    .container{max-width:900px;margin:16px auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.2)}
-    h2{color:#0d47a1}
-    input,select{width:100%;padding:10px;margin:6px 0 14px;border-radius:8px;border:1px solid #ccc}
-    .btn{background:#ff9800;color:#fff;border:none;border-radius:12px;padding:12px 18px;font-size:16px;cursor:pointer}
-    .btn:hover{background:#fb8c00}
-    .hidden{display:none}
-    .progress{height:18px;background:#eee;border-radius:10px;overflow:hidden;margin:10px 0}
-    .progress-bar{height:100%;width:0;background:#4caf50;transition:.3s}
-    .answer{background:#f3f3f3;padding:8px;border-radius:8px;margin:6px 0}
-    footer{text-align:center;color:#fff;padding:10px}
- .lesson-card{
-  border:2px solid #0d47a1;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-}
-.lesson-card.locked{opacity:.4}
-.level-btn{
-  margin:6px 6px 0 0;
-  padding:8px 14px;
-  border:none;
-  border-radius:20px;
-}
-.level-btn.locked{background:#ccc}
-.level-btn.open{background:#4caf50;color:#fff}
-.level-btn.done{background:#2196f3;color:#fff}
+<meta charset="UTF-8">
+<title>Python Quest – Tin học 10</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:linear-gradient(135deg,#43cea2,#185a9d)}
+header{background:#0d47a1;color:#fff;padding:16px;text-align:center}
+.container{max-width:900px;margin:16px auto;background:#fff;border-radius:16px;padding:20px}
+.hidden{display:none}
+input{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc}
+button{background:#ff9800;color:#fff;border:none;padding:10px 16px;border-radius:12px;cursor:pointer}
+.lesson{border:2px solid #0d47a1;border-radius:12px;padding:12px;margin-bottom:12px}
+.locked{opacity:.4}
+.level{margin:6px;padding:6px 14px;border-radius:20px;border:none}
+.open{background:#4caf50;color:#fff}
+.done{background:#2196f3;color:#fff}
+.progress{height:16px;background:#eee;border-radius:10px;overflow:hidden}
+.bar{height:100%;background:#4caf50;width:0}
+.answer{background:#f3f3f3;margin:6px 0;padding:6px;border-radius:8px}
 </style>
- 
-
 </head>
+
 <body>
 <header>
-  <h1>🐍 Python Quest</h1>
-  <p>Ứng dụng kiểm tra – ôn tập Python | Tin học 10 (KNTT)</p>
+<h1>🐍 PYTHON QUEST</h1>
+<p>Ôn tập – kiểm tra Tin học 10</p>
 </header>
 
-<div class="container" id="screen-login">
-  <h2>👤 Thông tin học sinh</h2>
-  <input id="hs_name" placeholder="Họ và tên" />
-  <input id="hs_class" placeholder="Lớp" />
-  <button class="btn" onclick="goLesson()">Bắt đầu</button>
+<div class="container" id="loginScreen">
+<h2>Đăng nhập</h2>
+<input id="name" placeholder="Họ và tên">
+<input id="cls" placeholder="Lớp">
+<input id="role" placeholder="Nhập 'gv' nếu là giáo viên">
+<button onclick="login()">Vào hệ thống</button>
 </div>
 
-<div class="container hidden" id="screen-lesson">
-  <h2>📚 Chọn bài học</h2>
-  <select id="level">
-    <option value="biet">Mức BIẾT</option>
-    <option value="hieu">Mức HIỂU</option>
-    <option value="vandung">Mức VẬN DỤNG</option>
-  </select>
-  <button class="btn" onclick="startQuiz()">Vào làm bài</button>
+<div class="container hidden" id="lessonScreen">
+<h2>📚 Danh sách bài học</h2>
+<div id="lessonBox"></div>
 </div>
-<div class="container hidden" id="screen-quiz">
-  <h2 id="title"></h2>
-  <div class="progress"><div class="progress-bar" id="bar"></div></div>
-  <div id="question"></div>
-  <div id="answers"></div>
-  <button class="btn" onclick="nextQ()">Câu tiếp</button>
-</div>
-
-<div class="container hidden" id="screen-result">
-  <h2>🎉 Kết quả</h2>
-  <p id="score"></p>
-  <p><em>Giáo viên sẽ nhận được kết quả của em.</em></p>
-  <button class="btn" onclick="location.reload()">Làm bài khác</button>
-</div>
-
-<footer>© 2026 – Ứng dụng phục vụ SKKN nâng cao năng lực số HS lớp 10</footer>
 
 <script>
-  let currentLesson="", currentLevel="";
-const LESSONS=["B17","B18","B19","B20","B21"];
-const LEVELS=["biet","hieu","vandung"];
-function initProgress(){
-  if(!localStorage.getItem("progress")){
-    const p={};
-    LESSONS.forEach(l=>{
-      p[l]={biet:false,hieu:false,vandung:false};
-    });
-    localStorage.setItem("progress",JSON.stringify(p));
-  }
-}
-
-function renderLessons(){
-  const p=JSON.parse(localStorage.getItem("progress"));
-  const box=document.getElementById("lesson-list");
-  box.innerHTML="";
-  LESSONS.forEach((l,i)=>{
-    const unlocked=i===0||Object.values(p[LESSONS[i-1]]).every(v=>v);
-    let html=`<div class="lesson-card ${unlocked?"":"locked"}"><h3>${l}</h3>`;
-    LEVELS.forEach((lv,j)=>{
-      const canOpen=unlocked&&(j===0||p[l][LEVELS[j-1]]);
-      const cls=p[l][lv]?"done":(canOpen?"open":"locked");
-      html+=`<button class="level-btn ${cls}" ${canOpen?"":"disabled"}
-        onclick="startQuiz('${l}','${lv}')">${lv.toUpperCase()}</button>`;
-    });
-    html+="</div>";
-    box.innerHTML+=html;
-  });
-}
-
-const DATA = {
-  /* =======================
-     BÀI 17 – BIẾN VÀ LỆNH GÁN
-  ======================== */
-  B17: {
-    biet: [
-      {q:"Biến trong Python dùng để làm gì?",a:["Lưu trữ dữ liệu","So sánh dữ liệu","In dữ liệu","Lặp chương trình"],c:0},
-      {q:"Kí hiệu gán trong Python là?",a:["==","=",":=","->"],c:1},
-      {q:"Tên biến hợp lệ là?",a:["2x","x_1","x-1","@x"],c:1},
-      {q:"Python có phân biệt chữ hoa – chữ thường không?",a:["Không","Có","Tùy hệ điều hành","Tùy chương trình"],c:1},
-      {q:"Giá trị của x sau lệnh x=5 là?",a:["5","x","0","Không xác định"],c:0},
-      {q:"Kiểu dữ liệu của 3.14 là?",a:["int","float","str","bool"],c:1},
-      {q:"Lệnh gán dùng để?",a:["So sánh","Gán giá trị","Nhập dữ liệu","Xuất dữ liệu"],c:1},
-      {q:"Biến trong Python không được bắt đầu bằng?",a:["Chữ cái","Dấu gạch dưới","Chữ số","Chữ thường"],c:2},
-      {q:"x=10 là ví dụ của?",a:["Biểu thức","Câu lệnh gán","Hàm","Vòng lặp"],c:1},
-      {q:"Giá trị True thuộc kiểu nào?",a:["int","str","bool","float"],c:2}
-    ],
-    hieu: [
-      {q:"x=5; y=x+3. Giá trị y là?",a:["5","3","8","Lỗi"],c:2},
-      {q:"x=10; x=x+1. Giá trị x là?",a:["10","11","9","Lỗi"],c:1},
-      {q:"Tên biến nào sau đây sai?",a:["soLuong","_tong","Tong-1","tong1"],c:2},
-      {q:"x='5'. Kiểu dữ liệu của x là?",a:["int","float","str","bool"],c:2},
-      {q:"Lệnh gán được thực hiện theo thứ tự?",a:["Trái sang phải","Phải sang trái","Ngẫu nhiên","Đồng thời"],c:1},
-      {q:"x=y=5 có nghĩa là?",a:["x=5","y=5","x và y cùng bằng 5","Lỗi"],c:2},
-      {q:"Python cho phép đổi kiểu dữ liệu bằng?",a:["input()","print()","int(), float()","range()"],c:2},
-      {q:"x=3; y=x. Khi x=5 thì y bằng?",a:["5","3","0","Lỗi"],c:1},
-      {q:"Biến giúp chương trình trở nên?",a:["Cứng nhắc","Linh hoạt","Khó hiểu","Dài hơn"],c:1},
-      {q:"Câu lệnh gán có thể dùng trong?",a:["Điều kiện","Vòng lặp","Mọi chương trình","Chỉ nhập"],c:2}
-    ],
-    vandung: [
-      {q:"Để lưu tuổi học sinh là số nguyên, biến phù hợp?",a:["tuoi='15'","tuoi=15","tuoi=15.0","tuoi=True"],c:1},
-      {q:"x=2; y=3; z=x*y. Giá trị z?",a:["5","6","23","Lỗi"],c:1},
-      {q:"Lệnh nào gán đúng chuỗi?",a:["x=10","x='Hello'","x=True","x=3.5"],c:1},
-      {q:"Muốn tăng x lên 2 đơn vị, dùng?",a:["x+2","x=x+2","2+x","x==2"],c:1},
-      {q:"Để gán giá trị nhập từ bàn phím cho n?",a:["n=input()","input(n)","print(n)","n==input()"],c:0},
-      {q:"x=5; y=2*x+1. y bằng?",a:["10","11","12","9"],c:1},
-      {q:"Biến dùng để tính tổng 2 số nhập vào?",a:["print","input","biến trung gian","range"],c:2},
-      {q:"Lệnh nào sai?",a:["a=1","b=2","1c=3","_d=4"],c:2},
-      {q:"Đổi chuỗi '10' thành số dùng?",a:["int('10')","str(10)","float()","input()"],c:0},
-      {q:"Ứng dụng của biến là?",a:["Lưu kết quả","Xử lý dữ liệu","Tái sử dụng giá trị","Tất cả"],c:3}
-    ]
-  },
-
-  /* =======================
-     BÀI 18 – LỆNH VÀO RA
-  ======================== */
-  B18: {
-    biet: [
-      {q:"Lệnh nhập dữ liệu trong Python là?",a:["print()","input()","int()","range()"],c:1},
-      {q:"Lệnh xuất dữ liệu là?",a:["input()","print()","type()","len()"],c:1},
-      {q:"input() trả về kiểu dữ liệu?",a:["int","float","str","bool"],c:2},
-      {q:"print() dùng để?",a:["Nhập","Xuất","Gán","So sánh"],c:1},
-      {q:"Muốn nhập số nguyên cần dùng?",a:["input()","int(input())","float()","str()"],c:1},
-      {q:"print('Hello') sẽ?",a:["Nhập Hello","In Hello","Lỗi","Không làm gì"],c:1},
-      {q:"Dữ liệu nhập từ bàn phím là?",a:["Số","Chuỗi","Logic","Ngẫu nhiên"],c:1},
-      {q:"print(5+3) cho kết quả?",a:["53","8","5+3","Lỗi"],c:1},
-      {q:"Hàm input có cần tham số không?",a:["Có","Không","Tùy","Không biết"],c:1},
-      {q:"print có thể in nhiều giá trị?",a:["Không","Có","Tùy","Sai"],c:1}
-    ],
-    hieu: [
-      {q:"x=int(input()). Nếu nhập 5 thì x bằng?",a:["'5'","5","5.0","Lỗi"],c:1},
-      {q:"print('A','B') in ra?",a:["AB","A B","A,B","Lỗi"],c:1},
-      {q:"input('Nhập số:') dùng để?",a:["Xuất","Nhập có thông báo","Gán","So sánh"],c:1},
-      {q:"print(x) khác print('x') ở điểm?",a:["Giá trị","Kiểu","Biến","Không khác"],c:0},
-      {q:"Nếu nhập 3 và 4, x=input(), y=input(), x+y là?",a:["7","34","Lỗi","0"],c:1},
-      {q:"Muốn tính tổng 2 số nhập cần?",a:["int()","float()","Chuyển kiểu","Không cần"],c:2},
-      {q:"print(x+y) cần điều kiện?",a:["x,y là số","x,y là chuỗi","x,y là bool","Không cần"],c:0},
-      {q:"input luôn trả về?",a:["Số","Chuỗi","Logic","Danh sách"],c:1},
-      {q:"print giúp kiểm tra?",a:["Giá trị","Lỗi","Chương trình","Tất cả"],c:0},
-      {q:"Kết hợp input và print để?",a:["Nhập – xuất","Lặp","Rẽ nhánh","Gán"],c:0}
-    ],
-    vandung: [
-      {q:"Viết lệnh nhập tuổi và in ra?",a:["print(input())","x=input(); print(x)","input(print())","Sai"],c:1},
-      {q:"Nhập 2 số và in tổng cần bao nhiêu biến?",a:["1","2","3","0"],c:2},
-      {q:"Muốn in: Tổng = 10 dùng?",a:["print('Tổng=',10)","print('Tổng=10')","print(Tổng,10)","Lỗi"],c:0},
-      {q:"Nhập chiều dài và rộng để tính S?",a:["1 input","2 input","3 input","Không cần"],c:1},
-      {q:"Lỗi thường gặp khi nhập số?",a:["Sai kiểu","Quên int()","Quên biến","Tất cả"],c:3},
-      {q:"print(x+y) sai khi?",a:["x,y là chuỗi","x,y là số","x,y tồn tại","x,y nhập"],c:0},
-      {q:"input phù hợp với bài toán?",a:["Tĩnh","Có dữ liệu thay đổi","Không nhập","Chỉ in"],c:1},
-      {q:"Muốn nhập điểm HS nên dùng?",a:["int","float","str","bool"],c:1},
-      {q:"print giúp HS làm gì?",a:["Xem kết quả","Kiểm tra","Hiểu chương trình","Tất cả"],c:3},
-      {q:"Ứng dụng lệnh vào ra là?",a:["Giao tiếp người dùng","Xử lý dữ liệu","Điều khiển","Tất cả"],c:3}
-    ]
-  }
-};
-let qs=[],i=0,score=0;
-function startQuiz(lesson,lv){
-  qs=DATA[lesson][lv];
-  i=0;score=0;
-  currentLesson=lesson;
-  currentLevel=lv;
-  document.getElementById('screen-lesson').classList.add('hidden');
-  document.getElementById('screen-quiz').classList.remove('hidden');
-  document.getElementById('title').innerText=`${lesson} – ${lv.toUpperCase()}`;
-  loadQ();
-}
-  function goLesson(){
-  if(!hs_name.value||!hs_class.value){
-    alert("Nhập đầy đủ thông tin");
-    return;
-  }
-  initProgress();
-  document.getElementById('screen-login').classList.add('hidden');
-  document.getElementById('screen-lesson').classList.remove('hidden');
-  renderLessons();
-}
-  const lesson = document.getElementById('lesson').value;
-  const lv = document.getElementById('level').value;
-  qs = DATA[lesson][lv];   // ⭐ DÒNG QUAN TRỌNG
-  i = 0;
-  score = 0;
-  document.getElementById('screen-lesson').classList.add('hidden');
-  document.getElementById('screen-quiz').classList.remove('hidden');
-  document.getElementById('title').innerText =
-    `${lesson} – ${lv.toUpperCase()}`;
-  loadQ();
-}
-
-function loadQ(){
-  const q=qs[i];
-  document.getElementById('question').innerHTML=`<b>Câu ${i+1}:</b> ${q.q}`;
-  document.getElementById('answers').innerHTML=q.a.map((x,j)=>`<div class='answer'><input type='radio' name='ans' value='${j}'> ${x}</div>`).join('');
-  document.getElementById('bar').style.width=((i+1)/qs.length*100)+'%';
-}
-function nextQ(){
-  const ch=document.querySelector('input[name=ans]:checked');
-  if(!ch){alert('Chọn đáp án');return}
-  if(+ch.value===qs[i].c)score++;
-  i++;
-  if(i<qs.length)loadQ(); else showResult();
-}
-function showResult(){
-  document.getElementById('screen-quiz').classList.add('hidden');
-  document.getElementById('screen-result').classList.remove('hidden');
-  document.getElementById('score').innerText=`Điểm: ${score}/${qs.length}`;
-  const p=JSON.parse(localStorage.getItem("progress"));
-  p[currentLesson][currentLevel]=true;
-  localStorage.setItem("progress",JSON.stringify(p));
-}
-
-</script>
-</body>
-</html>
-
-
-
-
-
-
+// ===== LẤY
